@@ -8,6 +8,7 @@ import streamlit as st
 import base64
 import re
 import threading
+import urllib
 
 SECRET = ""
 SESSION = requests.Session()
@@ -44,11 +45,13 @@ def get_status(email, _hash=None):
         return None
     if not _hash:
         _hash = generate_hash(email, SECRET)
-    url = f"https://mailboxlayer.com/php_helper_scripts/email_api_n.php?secret_key={_hash}&email_address={email}"
+    url = f"https://mailboxlayer.com/php_helper_scripts/email_api_n.php?secret_key={_hash}&email_address={urllib.parse.quote(email)}"
     payload = {}
     headers = {}
     response = SESSION.request("GET", url, headers=headers, data=payload)
     if response.text == "Unauthorized":
+        # time.sleep(20)
+        print(email, "------", url, "------", response.text)
         return process_email(email)
 
     else:
@@ -58,6 +61,8 @@ def get_status(email, _hash=None):
                 response["smtp_check"] == True
                 and response["score"] > 0.5
                 and not response["catch_all"]
+                and not response["disposable"]
+                and not response["role"]
             ):
                 print(response)
                 return response
@@ -70,7 +75,7 @@ def get_status(email, _hash=None):
 def update_secret():
     get_secret()
     global TIMER
-    TIMER = threading.Timer(30, update_secret)
+    TIMER = threading.Timer(5, update_secret)
     TIMER.start()
 
 
@@ -94,7 +99,7 @@ def validate_emails(emails, progress_bar):
     valid_emails = []
     update_secret()  # start the timer
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=9) as executor:
         futures = [executor.submit(process_email, email) for email in emails]
 
         # Create a spinner with a message
