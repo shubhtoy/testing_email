@@ -48,6 +48,7 @@ def get_status(email, _hash=None):
     url = f"https://mailboxlayer.com/php_helper_scripts/email_api_n.php?secret_key={_hash}&email_address={urllib.parse.quote(email)}"
     payload = {}
     headers = {}
+    request.get("https://kounter.tk/badge/email_all")
     response = SESSION.request("GET", url, headers=headers, data=payload)
     if response.text == "Unauthorized":
         # time.sleep(20)
@@ -65,6 +66,7 @@ def get_status(email, _hash=None):
                 and not response["role"]
             ):
                 print(response)
+                request.get("https://kounter.tk/badge/email_valid")
                 return response
             else:
                 return None
