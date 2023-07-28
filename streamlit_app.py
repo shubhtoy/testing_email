@@ -119,8 +119,13 @@ def validate_emails(emails, progress_bar):
 
 def main():
     # Add a title to the main window
+
+
+
+    st.set_page_config(page_title="Email Validator", page_icon=":envelope:")
+    st.title("Email Address Validator")
     st.markdown(
-    """
+        """
     <style>
     .css-1jc7ptx, .e1ewe7hr3, .viewerBadge_container__1QSob,
     .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
@@ -131,11 +136,6 @@ def main():
     """,
     unsafe_allow_html=True
     )
-
-
-
-    st.set_page_config(page_title="Email Validator", page_icon=":envelope:")
-    st.title("Email Address Validator")
     st.write(
         """
     This app allows you to validate email addresses from a CSV file or text input. 
