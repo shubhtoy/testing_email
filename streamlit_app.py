@@ -62,11 +62,7 @@ def get_status(email, _hash=None):
         response = response.json()
         try:
             if (
-                response["smtp_check"] == True
-                and response["score"] > 0.5
-                and not response["catch_all"]
-                and not response["disposable"]
-                and not response["role"]
+                response["score"] > 0.5
             ):
                 print(response)
                 try:
